@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/app/sidebar';
 import AppHeader from '@/components/app/app-header';
+import BoxLoader from '@/components/ui/box-loader';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -21,7 +22,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (loading || !user) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
-        <div className="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"></div>
+        <BoxLoader />
       </div>
     );
   }
@@ -30,9 +31,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (pathname === '/') {
     router.push('/folders');
     return (
-        <div className="flex h-screen w-full items-center justify-center bg-background">
-            <div className="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"></div>
-        </div>
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <BoxLoader />
+      </div>
     );
   }
 
@@ -42,7 +43,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <SidebarInset className="flex flex-col">
         <AppHeader />
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-            {children}
+          {children}
         </main>
       </SidebarInset>
     </SidebarProvider>

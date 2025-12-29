@@ -41,35 +41,35 @@ export default function FolderPage() {
       };
       fetchFolder();
     } else if (!user) {
-        // if user logs out, redirect
-        router.push('/login');
+      // if user logs out, redirect
+      router.push('/login');
     }
   }, [user, folderId, router]);
 
   if (loading || !folder) {
     return (
-        <div>
-            <div className="mb-6 flex items-center justify-between">
-                <Skeleton className="h-9 w-48" />
-                <Skeleton className="h-9 w-24" />
-            </div>
-            <div className="space-y-3">
-                <Skeleton className="h-12 w-full" />
-                <Skeleton className="h-12 w-full" />
-                <Skeleton className="h-12 w-full" />
-            </div>
+      <div>
+        <div className="mb-6 flex items-center justify-between">
+          <Skeleton className="h-9 w-48" />
+          <Skeleton className="h-9 w-24" />
         </div>
+        <div className="space-y-3">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+        </div>
+      </div>
     );
   }
-  
+
   const FolderIcon = getIcon(folder.icon);
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between gap-4">
+      <div className="mb-10 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <FolderIcon className="h-8 w-8 text-muted-foreground" />
-          <h1 className="font-headline text-3xl font-bold tracking-tight">{folder.name}</h1>
+          <FolderIcon className="h-6 w-6 text-muted-foreground" />
+          <h1 className="font-headline text-[22px] font-bold tracking-tight text-foreground">{folder.name}</h1>
         </div>
         <Sheet open={isSettingsSheetOpen} onOpenChange={setIsSettingsSheetOpen}>
           <SheetTrigger asChild>

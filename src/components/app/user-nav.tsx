@@ -45,26 +45,28 @@ export function UserNav() {
 
   const fallbackInitials = user.displayName
     ? user.displayName
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
     : user.email?.[0].toUpperCase() ?? 'U';
 
   const triggerButton = (
     <Button
       variant="ghost"
       className={cn(
-        "relative h-10 w-full justify-start gap-2 px-2",
+        "relative h-12 w-full justify-start gap-3 rounded-lg px-2 hover:bg-secondary",
         sidebarState === 'collapsed' && 'h-10 w-10 justify-center p-0'
       )}
     >
-      <Avatar className="h-8 w-8">
+      <Avatar className="h-8 w-8 ring-1 ring-border/50">
         <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? ''} />
-        <AvatarFallback>{fallbackInitials}</AvatarFallback>
+        <AvatarFallback className="bg-secondary text-xs font-medium">
+          {fallbackInitials}
+        </AvatarFallback>
       </Avatar>
       {sidebarState === 'expanded' && (
-        <div className="flex flex-col items-start text-left">
-            <p className="w-full truncate text-sm font-medium">
+        <div className="flex flex-col items-start text-left min-w-0">
+          <p className="w-full truncate text-sm font-medium text-foreground">
             {user.displayName}
           </p>
           <p className="w-full truncate text-xs text-muted-foreground">
@@ -79,16 +81,16 @@ export function UserNav() {
     <DropdownMenu>
       <TooltipProvider>
         <Tooltip>
-            <TooltipTrigger asChild>
-                <DropdownMenuTrigger asChild>
-                    {triggerButton}
-                </DropdownMenuTrigger>
-            </TooltipTrigger>
-            {sidebarState === 'collapsed' && (
-                <TooltipContent side="right">
-                    <p>{user.displayName}</p>
-                </TooltipContent>
-            )}
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              {triggerButton}
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          {sidebarState === 'collapsed' && (
+            <TooltipContent side="right" className="font-medium">
+              <p>{user.displayName}</p>
+            </TooltipContent>
+          )}
         </Tooltip>
       </TooltipProvider>
 
@@ -103,30 +105,30 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-            <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                    <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span>Toggle theme</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                    <DropdownMenuSubContent>
-                        <DropdownMenuItem onClick={() => setTheme("light")}>
-                            Light
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setTheme("dark")}>
-                            Dark
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setTheme("system")}>
-                            System
-                        </DropdownMenuItem>
-                    </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-            </DropdownMenuSub>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span>Toggle theme</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem onClick={() => setTheme("light")}>
+                  Light
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("dark")}>
+                  Dark
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("system")}>
+                  System
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={handleSignOut}>
+          <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
             <LogOut className="mr-2 h-4 w-4" />
             <span>Log out</span>
           </DropdownMenuItem>

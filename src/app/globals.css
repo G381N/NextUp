@@ -38,39 +38,48 @@
     --sidebar-border: 0 0% 90%;
     --sidebar-ring: 0 0% 20%;
   }
+
   .dark {
     --background: 0 0% 0%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 0%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 0%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 15%;
-    --accent-foreground: 0 0% 98%;
+    /* #000000 */
+    --foreground: 210 5% 91%;
+    /* #E7E9EA */
+    --card: 0 0% 3%;
+    /* #080808 - Very dark surface */
+    --card-foreground: 210 5% 91%;
+    --popover: 0 0% 3%;
+    --popover-foreground: 210 5% 91%;
+    --primary: 210 5% 91%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 5%;
+    /* #0D0D0D - Darker hover surface */
+    --secondary-foreground: 210 5% 91%;
+    --muted: 0 0% 5%;
+    --muted-foreground: 215 14% 65%;
+    /* #9CA3AF */
+    --accent: 203 89% 53%;
+    /* #1D9BF0 - Keep for checkboxes etc */
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
+    --border: 0 0% 8%;
+    --input: 0 0% 8%;
+    --ring: 203 89% 53%;
+    --chart-1: 203 89% 53%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --sidebar-background: 0 0% 0%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 0 0% 98%;
-    --sidebar-primary-foreground: 0 0% 9%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 15%;
-    --sidebar-ring: 0 0% 83.1%;
+    --sidebar-foreground: 215 14% 65%;
+    --sidebar-primary: 210 5% 91%;
+    /* White text for active items */
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 5%;
+    /* Dark hover - almost invisible */
+    --sidebar-accent-foreground: 210 5% 91%;
+    --sidebar-border: 0 0% 8%;
+    --sidebar-ring: 0 0% 20%;
   }
 }
 
@@ -78,9 +87,19 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Task List - Hide dividers on hover */
+.task-list-container>*:hover {
+  border-color: transparent !important;
+}
+
+.task-list-container>*:hover+* {
+  border-color: transparent !important;
 }
 
 /* Made by Gebin George. Check out my other work on gebin.net */

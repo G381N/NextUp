@@ -7,10 +7,10 @@ import { collection, query, where, orderBy, writeBatch, doc, Timestamp, deleteDo
 import { db } from '@/lib/firebase/config';
 import TaskItem from './task-item';
 import type { Task } from '@/types';
-import { Skeleton } from '../ui/skeleton';
+import BoxLoader from '@/components/ui/box-loader';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, ChevronDown, ChevronRight, Sparkles } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import {
   DndContext,
@@ -33,24 +33,25 @@ interface TaskListProps {
 
 export default function TaskList({ folderId }: TaskListProps) {
   const { user } = useAuth();
+  const [showCompleted, setShowCompleted] = React.useState(false);
   const [tasksCollection, loading, error] = useCollection(
     user
       ? query(
-          collection(db, 'users', user.uid, 'tasks'),
-          where('folderId', '==', folderId),
-          orderBy('completed', 'asc'),
-          orderBy('order', 'asc')
-        )
+        collection(db, 'users', user.uid, 'tasks'),
+        where('folderId', '==', folderId),
+        orderBy('completed', 'asc'),
+        orderBy('order', 'asc')
+      )
       : null
   );
 
   const tasks: Task[] = (tasksCollection?.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Task[]) || [];
-  
+
   useEffect(() => {
     if (!user || tasks.length === 0) return;
 
     const now = new Date();
-    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const fiveDaysAgo = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
 
     const batch = writeBatch(db);
     let dirty = false;
@@ -58,7 +59,7 @@ export default function TaskList({ folderId }: TaskListProps) {
     tasks.forEach(task => {
       if (task.completed && task.completedAt) {
         const completedDate = (task.completedAt as Timestamp).toDate();
-        if (completedDate < twentyFourHoursAgo) {
+        if (completedDate < fiveDaysAgo) {
           const taskRef = doc(db, 'users', user.uid, 'tasks', task.id);
           batch.delete(taskRef);
           dirty = true;
@@ -85,7 +86,7 @@ export default function TaskList({ folderId }: TaskListProps) {
     if (!over || active.id === over.id) {
       return;
     }
-    
+
     if (!user) return;
 
     const oldIndex = tasks.findIndex((task) => task.id === active.id);
@@ -96,8 +97,8 @@ export default function TaskList({ folderId }: TaskListProps) {
     // Update the 'order' property in Firestore
     const batch = writeBatch(db);
     newTasksOrder.forEach((task, index) => {
-        const taskRef = doc(db, 'users', user.uid, 'tasks', task.id);
-        batch.update(taskRef, { order: index });
+      const taskRef = doc(db, 'users', user.uid, 'tasks', task.id);
+      batch.update(taskRef, { order: index });
     });
     await batch.commit();
   };
@@ -107,10 +108,8 @@ export default function TaskList({ folderId }: TaskListProps) {
 
   if (loading) {
     return (
-      <div className="space-y-3">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
+      <div className="flex items-center justify-center py-20">
+        <BoxLoader />
       </div>
     );
   }
@@ -120,22 +119,22 @@ export default function TaskList({ folderId }: TaskListProps) {
     const firestoreIndexURL = `https://console.firebase.google.com/v1/r/project/${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}/firestore/indexes?create_composite=ClVwcm9qZWN0cy9zdHVkaW8tNDAyNTQ2ODQwOS05MGUxOC9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdGFza3MvaW5kZXhlcy9fEAEaDAoIZm9sZGVySWQQARoNCgljb21wbGV0ZWQQARoJCgVvcmRlchABGgwKCF9fbmFtZV9fEAE`;
 
     return (
-        <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error fetching tasks</AlertTitle>
-            <AlertDescription>
-                {isIndexError ? (
-                    <>
-                        <p className="mb-2">A Firestore index is required to sort and filter these tasks. Please create the index to continue.</p>
-                        <Button asChild>
-                            <a href={firestoreIndexURL} target="_blank" rel="noopener noreferrer">Create Index</a>
-                        </Button>
-                    </>
-                ) : (
-                    <p>{error.message}</p>
-                )}
-            </AlertDescription>
-        </Alert>
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error fetching tasks</AlertTitle>
+        <AlertDescription>
+          {isIndexError ? (
+            <>
+              <p className="mb-2">A Firestore index is required to sort and filter these tasks. Please create the index to continue.</p>
+              <Button asChild>
+                <a href={firestoreIndexURL} target="_blank" rel="noopener noreferrer">Create Index</a>
+              </Button>
+            </>
+          ) : (
+            <p>{error.message}</p>
+          )}
+        </AlertDescription>
+      </Alert>
     )
   }
 
@@ -155,36 +154,56 @@ export default function TaskList({ folderId }: TaskListProps) {
       onDragEnd={handleDragEnd}
       modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
     >
-      <div className="space-y-2">
-        <SortableContext items={uncompletedTasks} strategy={verticalListSortingStrategy}>
-          {uncompletedTasks.map((task) => (
-            <TaskItem key={task.id} task={task} tasks={tasks} />
-          ))}
-        </SortableContext>
-        
-        {completedTasks.length > 0 && uncompletedTasks.length > 0 && (
-          <div className="relative py-2">
-            <Separator />
-            <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 whitespace-nowrap bg-background px-2 text-xs text-muted-foreground">
-              <span>Completed</span>
-              <span className='text-muted-foreground/80'>(items are deleted after 24 hours)</span>
-            </div>
+      <div className="space-y-0 pb-0">
+        <div className="task-list-container rounded-xl bg-card p-2 divide-y divide-white/[0.06]">
+          <SortableContext items={uncompletedTasks} strategy={verticalListSortingStrategy}>
+            {uncompletedTasks.map((task) => (
+              <TaskItem key={task.id} task={task} tasks={tasks} />
+            ))}
+          </SortableContext>
+        </div>
+
+        {completedTasks.length > 0 && (
+          <div className="pt-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowCompleted(!showCompleted)}
+              className="h-8 w-full justify-start gap-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-transparent px-1 mb-2"
+            >
+              {showCompleted ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+              <span>Completed ({completedTasks.length})</span>
+            </Button>
+
+            {showCompleted && (
+              <div className="task-list-container mt-2 rounded-xl bg-card/30 p-2 opacity-60 divide-y divide-white/[0.04]">
+                <div className="px-4 py-2 text-[10px] text-muted-foreground/50 text-center uppercase tracking-wider">
+                  Auto-deleted after 5 days
+                </div>
+                {completedTasks.map((task) => (
+                  <TaskItem key={task.id} task={task} tasks={tasks} />
+                ))}
+              </div>
+            )}
           </div>
         )}
 
-        {completedTasks.length > 0 && uncompletedTasks.length === 0 && (
-           <div className="py-16 text-center text-muted-foreground">
-              <p>All tasks completed!</p>
-           </div>
+        {tasks.length > 0 && (
+          <div className="mt-8 flex items-center justify-center gap-2 text-[10px] uppercase tracking-widest text-muted-foreground/40 select-none">
+            <Sparkles className="h-3 w-3" />
+            <span>Priority adjusted automatically</span>
+          </div>
         )}
-        
-        {/* Completed tasks are not sortable for now */}
-        {completedTasks.map((task) => (
-          <TaskItem key={task.id} task={task} tasks={tasks} />
-        ))}
+
+        {completedTasks.length > 0 && uncompletedTasks.length === 0 && !showCompleted && (
+          <div className="py-8 text-center text-muted-foreground/50 text-sm">
+            <p>All clear!</p>
+          </div>
+        )}
       </div>
     </DndContext>
   );
 }
 
 // Made by Gebin George. Check out my other work on gebin.net
+
