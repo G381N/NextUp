@@ -21,6 +21,8 @@ import {
   FolderPlus,
   PlusCircle,
   Settings,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
@@ -47,6 +49,24 @@ function SidebarLogo() {
         )}
       >
         <Logo showText={state === 'expanded'} />
+      </button>
+    );
+}
+
+function CollapseSidebarButton() {
+    const { toggleSidebar, state } = useSidebar();
+    
+    if (state === 'collapsed') {
+      return null;
+    }
+    
+    return (
+      <button
+        onClick={() => toggleSidebar()}
+        className="text-muted-foreground hover:text-foreground transition-colors"
+        title="Collapse sidebar"
+      >
+        <ChevronLeft className="h-4 w-4" />
       </button>
     );
 }
@@ -89,8 +109,9 @@ export default function AppSidebar() {
       side="left"
       className="border-r"
     >
-      <SidebarHeader>
+      <SidebarHeader className="flex flex-row items-center justify-between">
         <SidebarLogo />
+        <CollapseSidebarButton />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
