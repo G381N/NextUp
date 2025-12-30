@@ -30,36 +30,36 @@ export function TitleBar() {
     };
 
     return (
-        <div className="fixed top-0 left-0 right-0 z-50 flex h-9 w-full items-center justify-between border-b bg-background/80 px-4 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 select-none app-region-drag transition-colors">
-            <div className="flex items-center gap-3 app-region-no-drag">
+        <div className="fixed top-0 left-0 right-0 z-50 flex h-9 w-full items-stretch justify-between border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 select-none app-region-drag transition-colors">
+            <div className="flex items-center gap-3 app-region-no-drag pl-4">
                 <PublicLogo iconClassName="h-4 w-4 text-primary" className="text-sm font-medium" />
             </div>
 
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[11px] font-medium tracking-wide text-muted-foreground/60 uppercase">
+            <div className="flex items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[11px] font-medium tracking-wide text-muted-foreground/60 uppercase pointer-events-none">
                 NextUp
             </div>
 
-            <div className="flex items-center gap-2 app-region-no-drag">
+            <div className="flex items-stretch app-region-no-drag ml-auto">
                 <button
                     onClick={handleMinimize}
-                    className="group inline-flex h-6 w-6 items-center justify-center rounded-sm text-muted-foreground/70 hover:bg-muted hover:text-foreground focus:outline-none transition-colors"
+                    className="group flex w-12 items-center justify-center text-muted-foreground/70 hover:bg-muted hover:text-foreground focus:outline-none transition-colors"
                     title="Minimize"
                 >
-                    <Minus className="h-3.5 w-3.5" />
+                    <Minus className="h-4 w-4" />
                 </button>
                 <button
                     onClick={handleMaximize}
-                    className="group inline-flex h-6 w-6 items-center justify-center rounded-sm text-muted-foreground/70 hover:bg-muted hover:text-foreground focus:outline-none transition-colors"
+                    className="group flex w-12 items-center justify-center text-muted-foreground/70 hover:bg-muted hover:text-foreground focus:outline-none transition-colors"
                     title="Maximize"
                 >
-                    <Square className="h-3 w-3" />
+                    <Square className="h-3.5 w-3.5" />
                 </button>
                 <button
                     onClick={handleClose}
-                    className="group inline-flex h-6 w-6 items-center justify-center rounded-sm text-muted-foreground/70 hover:bg-red-500 hover:text-white focus:outline-none transition-colors"
+                    className="group flex w-12 items-center justify-center text-muted-foreground/70 hover:bg-[#e81123] hover:text-white focus:outline-none transition-colors"
                     title="Close"
                 >
-                    <X className="h-3.5 w-3.5" />
+                    <X className="h-4 w-4" />
                 </button>
             </div>
 

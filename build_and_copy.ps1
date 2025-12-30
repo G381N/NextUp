@@ -42,7 +42,7 @@ if ($LASTEXITCODE -eq 0) {
 
     # Copy file
     Write-Host "Copying installer to public folder..."
-    Copy-Item "installer/NextUp.1.0.0.exe" -Destination "$dest/" -Force
+    Copy-Item "installer/NextUp.1.0.1.exe" -Destination "$dest/" -Force
     
     # Cleanup temp files
     cd ..

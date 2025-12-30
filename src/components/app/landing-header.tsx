@@ -13,7 +13,7 @@ export default function LandingHeader() {
         </Link>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" asChild>
-            <a href="/installer/NextUp.1.0.0.exe" download className="hidden md:flex">
+            <a href="/installer/NextUp.1.0.1.exe" download="NextUp.1.0.1.exe" className="hidden md:flex">
               <Download className="mr-2 h-4 w-4" />
               Download App
             </a>
