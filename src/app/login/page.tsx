@@ -1,16 +1,17 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, signInWithCredential, GoogleAuthProvider as GoogleAuthProviderClass } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ThemeSwitch } from '@/components/app/theme-switch';
 import Link from 'next/link';
-import { ChevronLeft, CheckCircle } from 'lucide-react';
+import { ChevronLeft, CheckCircle, Loader2, ExternalLink } from 'lucide-react';
 import { PublicLogo } from '@/components/app/logo';
+import { cn } from '@/lib/utils';
 import BoxLoader from '@/components/ui/box-loader';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -22,9 +23,41 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+// Check if running in Electron
+const isElectron = () => {
+  if (typeof window === 'undefined') return false;
+  return !!(window as any).electronAPI?.isElectron;
+};
+
 export default function LoginPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [isDesktopApp, setIsDesktopApp] = useState(false);
+  const [signInError, setSignInError] = useState<string | null>(null);
+  const [isSigningIn, setIsSigningIn] = useState(false);
+
+  useEffect(() => {
+    setIsDesktopApp(isElectron());
+
+    // Listen for auth token from Electron deep link
+    if (isElectron()) {
+      (window as any).electronAPI?.onAuthTokenReceived(async (tokens: any) => {
+        if (tokens.idToken) {
+          setIsSigningIn(true);
+          try {
+            // Sign in with the token received from browser
+            const credential = GoogleAuthProviderClass.credential(tokens.idToken);
+            await signInWithCredential(auth, credential);
+            router.push('/folders');
+          } catch (error: any) {
+            console.error('Deep link auth error:', error);
+            setSignInError('Failed to sign in from browser. Please try again.');
+            setIsSigningIn(false);
+          }
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (!loading && user) {
@@ -33,12 +66,40 @@ export default function LoginPage() {
   }, [user, loading, router]);
 
   const handleSignIn = async () => {
+    setSignInError(null);
+    setIsSigningIn(true);
+
+    // Desktop App Flow: Open system browser
+    if (isDesktopApp) {
+      // Open the callback page in default browser
+      // In dev, usage localhost:9002. In prod, use your domain
+      // For now assuming localhost or hosted URL
+      const authUrl = window.location.origin + '/auth/desktop-callback';
+
+      try {
+        // Using the exposed API to open external link
+        if ((window as any).electronAPI?.openExternalBuffer) {
+          (window as any).electronAPI.openExternalBuffer(authUrl);
+        } else {
+          window.open(authUrl, '_blank');
+        }
+      } catch (err) {
+        console.error('Failed to open browser:', err);
+        setSignInError('Could not open browser. Please try again.');
+        setIsSigningIn(false);
+      }
+      return;
+    }
+
+    // Web App Flow: Standard popup
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
       router.push('/folders');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error signing in with Google: ', error);
+      setSignInError('Failed to sign in. Please try again.');
+      setIsSigningIn(false);
     }
   };
 
@@ -59,17 +120,22 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      <div className="absolute top-4 left-4">
-        <Button variant="outline" size="icon" asChild>
-          <Link href="/">
-            <ChevronLeft className="h-4 w-4" />
-            <span className="sr-only">Back to Landing Page</span>
-          </Link>
-        </Button>
-      </div>
-      <div className="absolute top-4 right-4">
+      {/* Back button - only show in web */}
+      {!isDesktopApp && (
+        <div className="absolute top-4 left-4">
+          <Button variant="outline" size="icon" asChild>
+            <Link href="/">
+              <ChevronLeft className="h-4 w-4" />
+              <span className="sr-only">Back to Landing Page</span>
+            </Link>
+          </Button>
+        </div>
+      )}
+
+      <div className={cn("absolute right-4 z-10", isDesktopApp ? "top-12" : "top-4")}>
         <ThemeSwitch />
       </div>
+
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4">
@@ -88,11 +154,47 @@ export default function LoginPage() {
             ))}
           </ul>
         </CardContent>
-        <CardFooter>
-          <Button onClick={handleSignIn} size="lg" className="w-full">
-            <GoogleIcon className="mr-2 h-5 w-5" />
-            Continue with Google
+        <CardFooter className="flex flex-col gap-3">
+          <Button
+            onClick={handleSignIn}
+            size="lg"
+            className="w-full"
+            disabled={isSigningIn}
+          >
+            {isSigningIn ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                {isDesktopApp ? 'Waiting for browser...' : 'Signing in...'}
+              </>
+            ) : (
+              <>
+                <GoogleIcon className="mr-2 h-5 w-5" />
+                {isDesktopApp ? 'Sign in with Browser' : 'Continue with Google'}
+                {isDesktopApp && <ExternalLink className="ml-2 h-4 w-4 opacity-50" />}
+              </>
+            )}
           </Button>
+          {isDesktopApp && isSigningIn && (
+            <div className="flex flex-col gap-2 w-full">
+              <p className="text-xs text-muted-foreground text-center">
+                Check your browser window to authenticate.
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setIsSigningIn(false);
+                  setSignInError(null);
+                }}
+                className="w-full h-8 text-xs hover:bg-muted"
+              >
+                Cancel
+              </Button>
+            </div>
+          )}
+          {signInError && (
+            <p className="text-sm text-destructive text-center">{signInError}</p>
+          )}
         </CardFooter>
       </Card>
     </main>

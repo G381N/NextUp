@@ -1,7 +1,8 @@
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: 'standalone',
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -33,12 +34,12 @@ const nextConfig: NextConfig = {
   webpack: (config, { isServer }) => {
     // This is to prevent a warning about a module not being found in the browser.
     if (!isServer) {
-        config.resolve.fallback = {
-            ...config.resolve.fallback,
-            "fs": false,
-            "net": false,
-            "tls": false,
-        };
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        "fs": false,
+        "net": false,
+        "tls": false,
+      };
     }
     return config;
   },

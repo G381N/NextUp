@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { GeistSans } from 'geist/font/sans';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
+import { TitleBarLayout } from '@/components/app/titlebar';
 
 export const metadata: Metadata = {
   title: 'NextUp',
@@ -32,7 +33,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
+            <TitleBarLayout>
+              {children}
+            </TitleBarLayout>
             <Toaster />
           </AuthProvider>
         </ThemeProvider>

@@ -1,0 +1,80 @@
+{
+    "name": "nextup-desktop",
+    "version": "1.0.0",
+    "description": "NextUp Task Manager - Desktop App",
+    "main": "electron/main.js",
+    "author": "Gebin George",
+    "license": "MIT",
+    "scripts": {
+        "dev": "concurrently -k \"cd .. && npm run dev\" \"wait-on http://localhost:9002 && electron .\"",
+        "build": "cd .. && npm run build && electron-builder",
+        "dist": "electron-builder --win",
+        "postinstall": "electron-builder install-app-deps"
+    },
+    "dependencies": {
+        "electron-is-dev": "^3.0.1"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2",
+        "electron": "^28.1.0",
+        "electron-builder": "^24.9.1",
+        "wait-on": "^7.2.0"
+    },
+    "build": {
+        "appId": "com.nextup.desktop",
+        "productName": "NextUp",
+        "directories": {
+            "output": "dist",
+            "buildResources": "resources"
+        },
+        "files": [
+            "electron/**/*",
+            "!node_modules"
+        ],
+        "protocols": [
+            {
+                "name": "NextUp Login",
+                "schemes": [
+                    "nextup"
+                ]
+            }
+        ],
+        "extraResources": [
+            {
+                "from": "../.next/standalone",
+                "to": "app/server"
+            },
+            {
+                "from": "../public",
+                "to": "app/server/public"
+            },
+            {
+                "from": "../.next/static",
+                "to": "app/server/.next/static"
+            }
+        ],
+        "win": {
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "x64"
+                    ]
+                }
+            ],
+            "icon": "resources/icon.ico",
+            "artifactName": "NextUp.1.0.0.exe"
+        },
+        "nsis": {
+            "oneClick": false,
+            "perMachine": true,
+            "allowToChangeInstallationDirectory": true,
+            "installerIcon": "resources/icon.ico",
+            "uninstallerIcon": "resources/icon.ico",
+            "installerHeaderIcon": "resources/icon.ico",
+            "createDesktopShortcut": true,
+            "createStartMenuShortcut": true,
+            "shortcutName": "NextUp"
+        }
+    }
+}
