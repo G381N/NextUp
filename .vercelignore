@@ -1,11 +1,13 @@
+# Exclude desktop source code from Vercel build
+# This prevents Vercel from trying to install desktop dependencies
+# or process electron-specific code.
 desktop/
-node_modules/
-.next/
-out/
-build/
-.vercel
-*.tsbuildinfo
-next-env.d.ts
-build_and_copy.ps1
-installer/
-desktop_temp/
+
+# Keep build artifacts if they were ever committed (though they shouldn't be)
+**/node_modules
+**/.next
+**/dist
+**/installer
+**/win-unpacked
+**/out
+**/build_temp
