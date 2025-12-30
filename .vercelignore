@@ -1,0 +1,11 @@
+desktop/
+node_modules/
+.next/
+out/
+build/
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+build_and_copy.ps1
+installer/
+desktop_temp/
