@@ -41,15 +41,15 @@
         ],
         "extraResources": [
             {
-                "from": "../.next/standalone",
+                "from": "build_temp/standalone",
                 "to": "app/server"
             },
             {
-                "from": "../public",
+                "from": "build_temp/public",
                 "to": "app/server/public"
             },
             {
-                "from": "../.next/static",
+                "from": "build_temp/static",
                 "to": "app/server/.next/static"
             }
         ],
@@ -62,16 +62,13 @@
                     ]
                 }
             ],
-            "icon": "resources/icon.ico",
+            "icon": "resources/icon.png",
             "artifactName": "NextUp.1.0.0.exe"
         },
         "nsis": {
             "oneClick": false,
             "perMachine": true,
             "allowToChangeInstallationDirectory": true,
-            "installerIcon": "resources/icon.ico",
-            "uninstallerIcon": "resources/icon.ico",
-            "installerHeaderIcon": "resources/icon.ico",
             "createDesktopShortcut": true,
             "createStartMenuShortcut": true,
             "shortcutName": "NextUp"
