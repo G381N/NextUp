@@ -24,7 +24,7 @@
         "appId": "com.nextup.desktop",
         "productName": "NextUp",
         "directories": {
-            "output": "dist",
+            "output": "installer",
             "buildResources": "resources"
         },
         "files": [

@@ -101,12 +101,23 @@ export default function AppSidebar() {
   const [isTaskSheetOpen, setIsTaskSheetOpen] = React.useState(false);
 
 
+  const [isElectron, setIsElectron] = React.useState(false);
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && 'electronAPI' in window) {
+      setIsElectron(true);
+    }
+  }, []);
+
   return (
     <Sidebar
       collapsible="icon"
       variant="inset"
       side="left"
-      className="border-r border-border/50"
+      className={cn(
+        "border-r border-border/50 transition-all duration-200",
+        isElectron && "top-9 h-[calc(100vh-2.25rem)]"
+      )}
     >
       {/* Header */}
       <SidebarHeader className="flex flex-row items-center justify-between px-3 py-4">
