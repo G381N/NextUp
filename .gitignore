@@ -49,3 +49,5 @@ desktop/installer
 desktop/win-unpacked
 desktop/.next
 desktop/out
+public/installer/
+desktop/build_temp/
