@@ -304,7 +304,6 @@ export default function AppHeader() {
 
   return (
     <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-2 border-b bg-background px-3 lg:px-6">
-      <SidebarTrigger className="lg:hidden h-9 w-9" />
       <div className="flex-1" />
       <div className="flex items-center gap-2">
         {isSaving && (
