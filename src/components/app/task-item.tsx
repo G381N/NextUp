@@ -8,7 +8,7 @@ import { Edit, Calendar, GripVertical, Trash2 } from 'lucide-react';
 import type { Task, Folder } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
-import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '../ui/sheet';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -268,14 +268,14 @@ export default function TaskItem({ task, tasks }: TaskItemProps) {
       ref={setNodeRef}
       style={style}
       className={cn(
-        'group relative flex items-center gap-4 rounded-md bg-transparent px-4 py-3.5 transition-colors hover:bg-secondary',
+        'group relative flex items-center gap-2 sm:gap-4 rounded-md bg-transparent px-2 sm:px-4 py-3.5 transition-colors hover:bg-secondary',
         task.completed && 'opacity-50',
         isDragging && 'shadow-xl z-50 bg-secondary'
       )}
     >
       {/* Drag Handle */}
       {!task.completed && (
-        <div {...attributes} {...listeners} className="touch-none cursor-grab text-muted-foreground/40 opacity-0 transition-opacity duration-200 hover:text-foreground group-hover:opacity-100">
+        <div {...attributes} {...listeners} className="touch-none cursor-grab text-muted-foreground/40 opacity-100 sm:opacity-0 transition-opacity duration-200 hover:text-foreground group-hover:opacity-100">
           <GripVertical className="h-4 w-4" />
         </div>
       )}
@@ -322,7 +322,7 @@ export default function TaskItem({ task, tasks }: TaskItemProps) {
         )}
       </div>
 
-      <div className="flex items-center gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-within:opacity-100">
+      <div className="flex items-center gap-0.5 sm:gap-1 opacity-100 sm:opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-within:opacity-100">
         {task.completed ? (
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -355,6 +355,9 @@ export default function TaskItem({ task, tasks }: TaskItemProps) {
             <SheetContent onOpenAutoFocus={(e) => e.preventDefault()}>
               <SheetHeader>
                 <SheetTitle>Edit Task</SheetTitle>
+                <SheetDescription>
+                  Make changes to your task here. Click save when you&apos;re done.
+                </SheetDescription>
               </SheetHeader>
               <TaskForm
                 userId={user!.uid}

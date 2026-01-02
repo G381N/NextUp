@@ -12,10 +12,10 @@ export default function LandingHeader() {
           <PublicLogo iconClassName="h-6 w-6" />
         </Link>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" asChild>
-            <a href="/installer/NextUp.1.0.1.exe" download="NextUp.1.0.1.exe" className="hidden md:flex">
-              <Download className="mr-2 h-4 w-4" />
-              Download App
+          <Button variant="ghost" size="sm" asChild className="px-2 sm:px-3">
+            <a href="/installer/NextUp.1.0.1.exe" download="NextUp.1.0.1.exe" className="flex items-center">
+              <Download className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Download App</span>
             </a>
           </Button>
           <ThemeSwitch />

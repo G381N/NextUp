@@ -66,10 +66,10 @@ export default function FolderPage() {
 
   return (
     <div>
-      <div className="mb-10 flex items-center justify-between gap-4">
+      <div className="mb-6 sm:mb-10 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <FolderIcon className="h-6 w-6 text-muted-foreground" />
-          <h1 className="font-headline text-[22px] font-bold tracking-tight text-foreground">{folder.name}</h1>
+          <FolderIcon className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
+          <h1 className="font-headline text-lg sm:text-[22px] font-bold tracking-tight text-foreground">{folder.name}</h1>
         </div>
         <Sheet open={isSettingsSheetOpen} onOpenChange={setIsSettingsSheetOpen}>
           <SheetTrigger asChild>

@@ -30,7 +30,7 @@ import { db } from '@/lib/firebase/config';
 import type { Folder } from '@/types';
 import { Logo } from './logo';
 import { UserNav } from './user-nav';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from '@/components/ui/sheet';
 import { FolderForm } from './folder-form';
 import { TaskForm } from './task-form';
 import { getIcon } from '@/lib/icons';
@@ -44,7 +44,7 @@ function SidebarLogo() {
       onClick={() => toggleSidebar()}
       className={cn(
         'flex w-full items-center gap-2.5 text-lg font-semibold tracking-tight text-foreground transition-all duration-200',
-        state === 'collapsed' && 'justify-center'
+        state === 'collapsed' ? 'justify-center px-0' : 'px-2'
       )}
     >
       <Logo />
@@ -80,6 +80,9 @@ function FolderSettingsSheet({ folder, children }: { folder: Folder, children: R
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Folder Settings</SheetTitle>
+          <SheetDescription>
+            Manage your folder settings and preferences.
+          </SheetDescription>
         </SheetHeader>
         <FolderForm userId={user!.uid} folder={folder} onSuccess={() => setIsOpen(false)} />
       </SheetContent>
@@ -113,19 +116,18 @@ export default function AppSidebar() {
     <Sidebar
       collapsible="icon"
       variant="inset"
-      side="left"
       className={cn(
-        "border-r border-border/50 transition-all duration-200",
+        "border-r border-border transition-all duration-200",
         isElectron && "top-9 h-[calc(100vh-2.25rem)]"
       )}
     >
       {/* Header */}
-      <SidebarHeader className="flex flex-row items-center justify-between px-3 py-4">
+      <SidebarHeader className="flex flex-row h-14 items-center justify-between border-b border-sidebar-border px-2 transition-[padding] duration-200 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
         <SidebarLogo />
         <CollapseSidebarButton />
       </SidebarHeader>
 
-      <SidebarContent className="px-2">
+      <SidebarContent className="px-2 transition-[padding] duration-200 group-data-[collapsible=icon]:px-0">
         {/* Actions Section */}
         <SidebarGroup>
           <SidebarGroupLabel className="px-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70">
@@ -147,6 +149,9 @@ export default function AppSidebar() {
               <SheetContent>
                 <SheetHeader>
                   <SheetTitle>Create a new task</SheetTitle>
+                  <SheetDescription>
+                    Add a new task to your list.
+                  </SheetDescription>
                 </SheetHeader>
                 <TaskForm
                   userId={user!.uid}
@@ -171,6 +176,9 @@ export default function AppSidebar() {
               <SheetContent>
                 <SheetHeader>
                   <SheetTitle>Create a new folder</SheetTitle>
+                  <SheetDescription>
+                    Create a new folder to organize your tasks.
+                  </SheetDescription>
                 </SheetHeader>
                 <FolderForm userId={user!.uid} onSuccess={() => setIsFolderSheetOpen(false)} />
               </SheetContent>
@@ -237,7 +245,7 @@ export default function AppSidebar() {
       </SidebarContent>
 
       {/* Footer */}
-      <SidebarFooter className="border-t border-border/30 p-2">
+      <SidebarFooter className="border-t border-border p-2">
         <UserNav />
       </SidebarFooter>
     </Sidebar>

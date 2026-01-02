@@ -55,7 +55,7 @@ export function UserNav() {
       variant="ghost"
       className={cn(
         "relative h-12 w-full justify-start gap-3 rounded-lg px-2 hover:bg-secondary",
-        sidebarState === 'collapsed' && 'h-10 w-10 justify-center p-0'
+        sidebarState === 'collapsed' && 'h-8 w-8 justify-center p-0 mx-auto'
       )}
     >
       <Avatar className="h-8 w-8 ring-1 ring-border/50">
