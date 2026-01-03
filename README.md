@@ -1,4 +1,4 @@
-# NextUp - PC and web
+# NextUp - PC and web application.
 
 NextUp is a modern task management and productivity application designed to help users organize their tasks, prioritize effectively, and stay on top of their goals. Built with cutting-edge technologies, NextUp offers a seamless and intuitive user experience for managing personal and professional workflows.
 
