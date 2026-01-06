@@ -45,7 +45,6 @@ firebase-debug.log
 firestore-debug.log
 desktop/node_modules
 desktop/dist
-desktop/installer
 desktop/win-unpacked
 desktop/.next
 desktop/out
