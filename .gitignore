@@ -48,5 +48,7 @@ desktop/dist
 desktop/win-unpacked
 desktop/.next
 desktop/out
-public/installer/
+public/installer/*
+!public/installer/NextUp.1.0.1.exe
 desktop/build_temp/
+desktopapp/
